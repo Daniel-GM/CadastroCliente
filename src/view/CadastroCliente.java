@@ -35,17 +35,19 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private JPanel jpEmail = new JPanel();
     private JPanel jpBotao = new JPanel();
     private JPanel jpTable = new JPanel();
+    private JPanel jpSeparador = new JPanel();
     /*TITULOS*/
     private String[] titulos = {"ID", "Nome", "Email"};
     private Object[][] dados = {};
     /*tabela*/
     private JTable table = new JTable(dados,titulos);
-    JScrollPane tabela = new JScrollPane(table);
+    private JScrollPane tabela = new JScrollPane(table);
+    
 
     public CadastroCliente() throws HeadlessException{
         setTitle("Cadastro de cliente");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600,500);
+        setSize(600,390);
         setLocationRelativeTo(null);
         setVisible(true);
 
@@ -62,6 +64,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
         gbc.anchor = GridBagConstraints.WEST;
 
         itensTela();
+        
     }
 
     private void itensTela() {
@@ -69,12 +72,14 @@ public class CadastroCliente extends JFrame implements ActionListener {
         insereTelefone();
         insereEmail();
         insereBotoes();
+        insereSeparador();
         insereTabela();
 
         add(jpIdentificacao);
         add(jpTelefone);
         add(jpEmail);
         add(jpBotao);
+        add(jpSeparador);
         add(jpTable);
     }
 
@@ -115,6 +120,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private void insereBotoes() { /*Adicionando os botoes no Frame*/
         /*botao de INSERIR*/
         linha();
+        gbc.insets = new Insets(10, 5, 15, 0);
         botaoInserir.addActionListener(e->{
             System.out.println("Inserir");
         });
@@ -148,14 +154,25 @@ public class CadastroCliente extends JFrame implements ActionListener {
         botaoSair.addActionListener(e->{
             System.out.println("Sair");
         });
-        gbc.insets = new Insets(5, 70, 0,0);
+        gbc.insets = new Insets(-5, 70, 0, 0);
         jpBotao.add(botaoSair, gbc);
     }
 
+    private void insereSeparador(){
+        linha();
+        gbc.insets = new Insets(10, 5, 0, 0);
+        JLabel cc = new JLabel("Clientes cadastrados");
+        jpSeparador.add(cc, gbc);
+        coluna();
+        JSeparator separador = new JSeparator();
+        separador.setPreferredSize(new Dimension(427, 1));
+        jpSeparador.add(separador, gbc);
+    }
+    
     private void insereTabela() { /*Adicionando a Tabela no Frame*/
         linha();
         gbc.insets = new Insets(0, 5, 0,0);
-        tabela.setPreferredSize(new Dimension(553,250));
+        tabela.setPreferredSize(new Dimension(553,100));
         jpTable.add(tabela, gbc);
     }
 
