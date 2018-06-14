@@ -50,6 +50,10 @@ public class CadastroCliente extends JFrame implements ActionListener {
         setSize(600,390);
         setLocationRelativeTo(null);
         setVisible(true);
+        
+        botaoInserir.setEnabled(false);
+        botaoRemover.setEnabled(false);
+        botaoAlterar.setEnabled(false);
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
         jpIdentificacao.setLayout(new GridBagLayout());
@@ -123,36 +127,45 @@ public class CadastroCliente extends JFrame implements ActionListener {
         gbc.insets = new Insets(10, 5, 15, 0);
         botaoInserir.addActionListener(e->{
             System.out.println("Inserir");
+            limpaTxt();
         });
         jpBotao.add(botaoInserir, gbc);
         /*botao de REMOVER*/
         coluna();
         botaoRemover.addActionListener(e->{
             System.out.println("Remover");
+            limpaBotao();
+            limpaTxt();
         });
         jpBotao.add(botaoRemover, gbc);
         /*botao de ALTERAR*/
         coluna();
         botaoAlterar.addActionListener(e->{
             System.out.println("Alterar");
+            limpaBotao();
         });
         jpBotao.add(botaoAlterar, gbc);
         /*botao de CONFIRMAR*/
         coluna();
         botaoConfirmar.addActionListener(e->{
             System.out.println("Confirmar");
+            insereBotao();
+            limpaTxt();
         });
         jpBotao.add(botaoConfirmar, gbc);
         /*botao de CANCELAR*/
         coluna();
         botaoCancelar.addActionListener(e->{
             System.out.println("Cancelar");
+            limpaBotao();
+            limpaTxt();
         });
         jpBotao.add(botaoCancelar, gbc);
         /*botao de SAIR*/
         coluna();
         botaoSair.addActionListener(e->{
             System.out.println("Sair");
+            System.exit(0);
         });
         gbc.insets = new Insets(-5, 70, 0, 0);
         jpBotao.add(botaoSair, gbc);
@@ -183,7 +196,24 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private void coluna() { /*Metodo para ordenar os itens do Frame (passar para a proxima coluna | \t)*/
         gbc.gridx = gbc.gridx + 1;
     }
-
+    private void insereBotao(){
+        botaoInserir.setEnabled(true);
+        botaoRemover.setEnabled(true);
+        botaoAlterar.setEnabled(true);
+    }
+    private void limpaBotao(){
+        botaoInserir.setEnabled(false);
+        botaoRemover.setEnabled(false);
+        botaoAlterar.setEnabled(false);
+    }
+    private void limpaTxt(){
+        txtCelular.setText("");
+        txtComercial.setText("");
+        txtEmail.setText("");
+        txtId.setText("");
+        txtNome.setText("");
+        txtResidencial.setText("");
+    }
     @Override
     public void actionPerformed(ActionEvent actionEvent) {    }
 }
