@@ -1,7 +1,10 @@
-package cadastrocliente;
+package view;
 import javax.swing.*;
 import java.awt.*;
-public class CadastroCliente extends JFrame {
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CadastroCliente extends JFrame implements ActionListener {
     /*POSICAO*/
     GridBagConstraints gbc = null;
     /*NOME*/
@@ -31,7 +34,13 @@ public class CadastroCliente extends JFrame {
     private JPanel jpTelefone = new JPanel();
     private JPanel jpEmail = new JPanel();
     private JPanel jpBotao = new JPanel();
-
+    private JPanel jpTable = new JPanel();
+    /*TITULOS*/
+    private String[] titulos = {"ID", "Nome", "Email"};
+    private Object[][] dados = {};
+    /*tabela*/
+    private JTable table = new JTable(dados,titulos);
+    JScrollPane tabela = new JScrollPane(table);
 
     public CadastroCliente() throws HeadlessException{
         setTitle("Cadastro de cliente");
@@ -45,12 +54,31 @@ public class CadastroCliente extends JFrame {
         jpTelefone.setLayout(new GridBagLayout());
         jpEmail.setLayout(new GridBagLayout());
         jpBotao.setLayout(new GridBagLayout());
+        jpTable.setLayout(new GridBagLayout());
 
 
         gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 0,0);
         gbc.anchor = GridBagConstraints.WEST;
 
+        itensTela();
+    }
+
+    private void itensTela() {
+        insereIdNome();
+        insereTelefone();
+        insereEmail();
+        insereBotoes();
+        insereTabela();
+
+        add(jpIdentificacao);
+        add(jpTelefone);
+        add(jpEmail);
+        add(jpBotao);
+        add(jpTable);
+    }
+
+    private void insereIdNome() { /*Adicionando a parte de ID e Nome no Frame*/
         gbc.gridx = 0;
         gbc.gridy = 0;
         jpIdentificacao.add(id, gbc);
@@ -60,6 +88,9 @@ public class CadastroCliente extends JFrame {
         jpIdentificacao.add(txtId, gbc);
         coluna();
         jpIdentificacao.add(txtNome, gbc);
+    }
+
+    private void insereTelefone() { /*Adicionando a parte de Telefone no Frame*/
         linha();
         jpTelefone.add(telResidencial, gbc);
         coluna();
@@ -72,38 +103,70 @@ public class CadastroCliente extends JFrame {
         jpTelefone.add(txtComercial, gbc);
         coluna();
         jpTelefone.add(txtCelular, gbc);
+    }
+
+    private void insereEmail() { /*Adicionando a parte de Email no Frame*/
         linha();
         jpEmail.add(email, gbc);
         linha();
         jpEmail.add(txtEmail, gbc);
-        linha();
-        jpBotao.add(botaoInserir, gbc);
-        coluna();
-        jpBotao.add(botaoRemover, gbc);
-        coluna();
-        jpBotao.add(botaoAlterar, gbc);
-        coluna();
-        jpBotao.add(botaoConfirmar, gbc);
-        coluna();
-        jpBotao.add(botaoCancelar, gbc);
-        coluna();
-        gbc.insets = new Insets(5, 70, 0,0);
-        jpBotao.add(botaoSair, gbc);
-
-
-
-
-        add(jpIdentificacao);
-        add(jpTelefone);
-        add(jpEmail);
-        add(jpBotao);
     }
 
-    private void linha(){
+    private void insereBotoes() { /*Adicionando os botoes no Frame*/
+        /*botao de INSERIR*/
+        linha();
+        botaoInserir.addActionListener(e->{
+            System.out.println("Inserir");
+        });
+        jpBotao.add(botaoInserir, gbc);
+        /*botao de REMOVER*/
+        coluna();
+        botaoRemover.addActionListener(e->{
+            System.out.println("Remover");
+        });
+        jpBotao.add(botaoRemover, gbc);
+        /*botao de ALTERAR*/
+        coluna();
+        botaoAlterar.addActionListener(e->{
+            System.out.println("Alterar");
+        });
+        jpBotao.add(botaoAlterar, gbc);
+        /*botao de CONFIRMAR*/
+        coluna();
+        botaoConfirmar.addActionListener(e->{
+            System.out.println("Confirmar");
+        });
+        jpBotao.add(botaoConfirmar, gbc);
+        /*botao de CANCELAR*/
+        coluna();
+        botaoCancelar.addActionListener(e->{
+            System.out.println("Cancelar");
+        });
+        jpBotao.add(botaoCancelar, gbc);
+        /*botao de SAIR*/
+        coluna();
+        botaoSair.addActionListener(e->{
+            System.out.println("Sair");
+        });
+        gbc.insets = new Insets(5, 70, 0,0);
+        jpBotao.add(botaoSair, gbc);
+    }
+
+    private void insereTabela() { /*Adicionando a Tabela no Frame*/
+        linha();
+        gbc.insets = new Insets(0, 5, 0,0);
+        tabela.setPreferredSize(new Dimension(553,250));
+        jpTable.add(tabela, gbc);
+    }
+
+    private void linha(){ /*Metodo para ordenar os itens do Frame (quebra de linha | \n)*/
         gbc.gridy = gbc.gridy + 1;
         gbc.gridx = 0;
     }
-    private void coluna() {
+    private void coluna() { /*Metodo para ordenar os itens do Frame (passar para a proxima coluna | \t)*/
         gbc.gridx = gbc.gridx + 1;
     }
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {    }
 }
