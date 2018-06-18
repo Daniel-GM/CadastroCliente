@@ -1,4 +1,7 @@
 package view;
+import model.bean.Cliente;
+import model.dao.ClienteDAO;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -29,7 +32,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private JButton botaoConfirmar = new JButton("Confirmar");
     private JButton botaoCancelar = new JButton("Cancelar");
     private JButton botaoSair = new JButton("Sair");
-    /*JPanel*/
+    /*JPANEL*/
     private JPanel jpIdentificacao = new JPanel();
     private JPanel jpTelefone = new JPanel();
     private JPanel jpEmail = new JPanel();
@@ -39,10 +42,11 @@ public class CadastroCliente extends JFrame implements ActionListener {
     /*TITULOS*/
     private String[] titulos = {"ID", "Nome", "Email"};
     private Object[][] dados = {};
-    /*tabela*/
+    /*TABELA*/
     private JTable table = new JTable(dados,titulos);
     private JScrollPane tabela = new JScrollPane(table);
-    
+    /*PEGAR O ULTIMO ID*/
+    private ClienteDAO cId  = new ClienteDAO();
 
     public CadastroCliente() throws HeadlessException{
         setTitle("Cadastro de cliente");
@@ -50,7 +54,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
         setSize(600,390);
         setLocationRelativeTo(null);
         setVisible(true);
-        
+
         botaoInserir.setEnabled(false);
         botaoRemover.setEnabled(false);
         botaoAlterar.setEnabled(false);
@@ -68,7 +72,6 @@ public class CadastroCliente extends JFrame implements ActionListener {
         gbc.anchor = GridBagConstraints.WEST;
 
         itensTela();
-        
     }
 
     private void itensTela() {
@@ -94,6 +97,8 @@ public class CadastroCliente extends JFrame implements ActionListener {
         coluna();
         jpIdentificacao.add(nome, gbc);
         linha();
+        txtId.setEnabled(false);
+        txtId.setText(Integer.toString(cId.idMax()+1));
         jpIdentificacao.add(txtId, gbc);
         coluna();
         jpIdentificacao.add(txtNome, gbc);
@@ -127,7 +132,14 @@ public class CadastroCliente extends JFrame implements ActionListener {
         gbc.insets = new Insets(10, 5, 15, 0);
         botaoInserir.addActionListener(e->{
             System.out.println("Inserir");
-            limpaTxt();
+            Cliente c = new Cliente();
+            ClienteDAO dao = new ClienteDAO();
+            c.setNome(txtNome.getText());
+            c.setTelefoneResidencial(txtResidencial.getText());
+            c.setTelefoneComercial(txtComercial.getText());
+            c.setTelefoneCelular(txtCelular.getText());
+            c.setEmail(txtEmail.getText());
+            dao.create(c);
         });
         jpBotao.add(botaoInserir, gbc);
         /*botao de REMOVER*/
@@ -136,6 +148,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
             System.out.println("Remover");
             limpaBotao();
             limpaTxt();
+            txtId.setText(Integer.toString(cId.idMax()+1));
         });
         jpBotao.add(botaoRemover, gbc);
         /*botao de ALTERAR*/
@@ -150,7 +163,6 @@ public class CadastroCliente extends JFrame implements ActionListener {
         botaoConfirmar.addActionListener(e->{
             System.out.println("Confirmar");
             insereBotao();
-            limpaTxt();
         });
         jpBotao.add(botaoConfirmar, gbc);
         /*botao de CANCELAR*/
@@ -159,6 +171,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
             System.out.println("Cancelar");
             limpaBotao();
             limpaTxt();
+            txtId.setText(Integer.toString(cId.idMax()+1));
         });
         jpBotao.add(botaoCancelar, gbc);
         /*botao de SAIR*/
