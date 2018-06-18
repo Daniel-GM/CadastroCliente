@@ -5,6 +5,8 @@ import model.bean.Cliente;
 
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClienteDAO {
     public void create(Cliente c){
@@ -47,4 +49,29 @@ public class ClienteDAO {
         }
         return 0;
     }
+
+    public List<Cliente> read(){
+        Connection conexao = Conexao.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<Cliente> clientes = new ArrayList<>();
+
+        try {
+            stmt = conexao.prepareStatement("SELECT id, nome, email FROM cliente");
+            rs = stmt.executeQuery();
+            for(;rs.next();){
+                Cliente cliente = new Cliente();
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setEmail(rs.getString("email"));
+                clientes.add(cliente);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null,"Dados da tabela com problema\n "+e);
+        }finally {
+            Conexao.closeConnection(conexao,stmt,rs);
+        }
+        return clientes;
+    }
+
 }

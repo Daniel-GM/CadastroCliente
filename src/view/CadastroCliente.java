@@ -1,4 +1,6 @@
 package view;
+import com.github.icarohs7.unoxlib.tables.EditableTableModel;
+import com.github.icarohs7.unoxlib.tables.ScrollTable;
 import model.bean.Cliente;
 import model.dao.ClienteDAO;
 
@@ -43,8 +45,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private String[] titulos = {"ID", "Nome", "Email"};
     private Object[][] dados = {};
     /*TABELA*/
-    private JTable table = new JTable(dados,titulos);
-    private JScrollPane tabela = new JScrollPane(table);
+    private ScrollTable tabela = ScrollTable.ofMutableCells(dados,titulos);
     /*PEGAR O ULTIMO ID*/
     private ClienteDAO cId  = new ClienteDAO();
 
@@ -58,6 +59,8 @@ public class CadastroCliente extends JFrame implements ActionListener {
         botaoInserir.setEnabled(false);
         botaoRemover.setEnabled(false);
         botaoAlterar.setEnabled(false);
+        txtId.setEnabled(false);
+        txtId.setText(Integer.toString(cId.idMax()+1));
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
         jpIdentificacao.setLayout(new GridBagLayout());
@@ -97,8 +100,6 @@ public class CadastroCliente extends JFrame implements ActionListener {
         coluna();
         jpIdentificacao.add(nome, gbc);
         linha();
-        txtId.setEnabled(false);
-        txtId.setText(Integer.toString(cId.idMax()+1));
         jpIdentificacao.add(txtId, gbc);
         coluna();
         jpIdentificacao.add(txtNome, gbc);
@@ -198,8 +199,17 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private void insereTabela() { /*Adicionando a Tabela no Frame*/
         linha();
         gbc.insets = new Insets(0, 5, 0,0);
-        tabela.setPreferredSize(new Dimension(553,100));
-        jpTable.add(tabela, gbc);
+        tabela.setPreferredSize(new Dimension(553,80));
+        readTable();
+        jpTable.add(tabela.getScrollableTable(), gbc);
+    }
+
+    private void readTable() {
+        EditableTableModel modelo = (EditableTableModel) tabela.getModel();
+        ClienteDAO cdao = new ClienteDAO();
+        for (Cliente c: cdao.read()){
+            modelo.addRow(new String[]{Integer.toString(c.getId()),c.getNome(),c.getEmail()});
+        }
     }
 
     private void linha(){ /*Metodo para ordenar os itens do Frame (quebra de linha | \n)*/
