@@ -60,11 +60,11 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         setLocationRelativeTo(null);
         setVisible(true);
 
-        botaoConfirmar.setEnabled(false);
-        botaoRemover.setEnabled(false);
-        botaoAlterar.setEnabled(false);
-        botaoCancelar.setEnabled(false);
-        txtId.setEnabled(false);
+        botaoConfirmar.setEnabled(false); //desabilitando o botao
+        botaoRemover.setEnabled(false); //desabilitando o botao
+        botaoAlterar.setEnabled(false); //desabilitando o botao
+        botaoCancelar.setEnabled(false); //desabilitando o botao
+        txtId.setEnabled(false); //desabilitando o textField
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
         jpIdentificacao.setLayout(new GridBagLayout());
@@ -78,29 +78,36 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         gbc.insets = new Insets(5, 5, 0,0);
         gbc.anchor = GridBagConstraints.WEST;
 
-        itensTela();
-        bloqueiaTxt();
+        itensTela(); //metodo para inserir todos os componentes na JFrame
+        bloqueiaTxt(); //desabilitando todos os textFields
     }
 
     private void itensTela() {
-        insereIdNome();
-        insereTelefone();
-        insereEmail();
-        insereBotoes();
-        insereSeparador();
-        insereTabela();
+        insereIdNome(); //inserindo componentes relacionados a id e nome
+        insereTelefone(); //inserindo componentes relacionados a telefone
+        insereEmail(); //inserindo componentes relacionados email
+        insereBotoes(); //inserindo componentes relacionados a botoes
+        insereSeparador(); //inserindo componentes relacionados a separador
+        insereTabela(); //inserindo componentes relacionados a tabela
 
-        add(jpIdentificacao);
-        add(jpTelefone);
-        add(jpEmail);
-        add(jpBotao);
-        add(jpSeparador);
-        add(jpTable);
+        add(jpIdentificacao); //adicionando o JPanel que contém insereIdNome
+        add(jpTelefone); //adicionando o JPanel que contém insereTelefone
+        add(jpEmail); //adicionando o JPanel que contém insereEmail
+        add(jpBotao); //adicionando o JPanel que contém insereBotoes
+        add(jpSeparador); //adicionando o JPanel que contém insereSeparador
+        add(jpTable); //adicionando o JPanel que contém insereTabela
     }
 
+    /**
+     * coluna(); serve para passar para a proxima coluna no GridBagLayout
+     * linha(); serve para passar para a proxima linha no GridBagLayout
+     *
+     * txt(nome da label), é o textField referente a Label em questão. ex: txtId, txtNome, txtCelular
+     */
+
     private void insereIdNome() { /*Adicionando a parte de ID e Nome no Frame*/
-        gbc.gridx = 0;
-        gbc.gridy = 0;
+        gbc.gridx = 0; //iniciando a coluna na primeira posição
+        gbc.gridy = 0; //iniciando a linha na primeira posição
         jpIdentificacao.add(id, gbc);
         coluna();
         jpIdentificacao.add(nome, gbc);
@@ -136,7 +143,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         /*botao de INSERIR*/
         linha();
         gbc.insets = new Insets(10, 5, 15, 0);
-        botaoInserir.addActionListener(e->{
+        botaoInserir.addActionListener(e->{ //lambda para o ActionListener do botão
             limpaTxt();
             botaoClicado = 1;
             txtId.setText(Integer.toString(cId.idMax()+1));
@@ -148,7 +155,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         jpBotao.add(botaoInserir, gbc);
         /*botao de REMOVER*/
         coluna();
-        botaoRemover.addActionListener(e->{
+        botaoRemover.addActionListener(e->{ //lambda para o ActionListener do botão
             botaoClicado=2;
             limpaBotao();
             botaoConfirmar.setEnabled(true);
@@ -157,7 +164,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         jpBotao.add(botaoRemover, gbc);
         /*botao de ALTERAR*/
         coluna();
-        botaoAlterar.addActionListener(e->{
+        botaoAlterar.addActionListener(e->{ //lambda para o ActionListener do botão
             botaoClicado=3;
             limpaBotao();
             desbloqueiaTxt();
@@ -167,7 +174,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         jpBotao.add(botaoAlterar, gbc);
         /*botao de CONFIRMAR*/
         coluna();
-        botaoConfirmar.addActionListener(e->{
+        botaoConfirmar.addActionListener(e->{ //lambda para o ActionListener do botão
             if(botaoClicado == 1) {
                 confirmaInserir();
             }else if(botaoClicado == 2){
@@ -182,7 +189,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         jpBotao.add(botaoConfirmar, gbc);
         /*botao de CANCELAR*/
         coluna();
-        botaoCancelar.addActionListener(e->{
+        botaoCancelar.addActionListener(e->{ //lambda para o ActionListener do botão
             limpaBotao();
             limpaTxt();
             bloqueiaTxt();
@@ -192,14 +199,14 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         jpBotao.add(botaoCancelar, gbc);
         /*botao de SAIR*/
         coluna();
-        botaoSair.addActionListener(e->{
+        botaoSair.addActionListener(e->{ //lambda para o ActionListener do botão
             System.exit(0);
         });
         gbc.insets = new Insets(-5, 70, 0, 0);
         jpBotao.add(botaoSair, gbc);
     }
 
-    private void confirmaInserir() {
+    private void confirmaInserir() { //metodo para confirmar a inserção
         Cliente c = new Cliente();
         ClienteDAO dao = new ClienteDAO();
         c.setNome(txtNome.getText());
@@ -216,7 +223,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         botaoSair.setEnabled(true);
     }
 
-    private void confirmaExcluir(){
+    private void confirmaExcluir(){ //metodo para confirmar a exclusão
         Cliente c = new Cliente();
         ClienteDAO dao = new ClienteDAO();
         c.setId(Integer.parseInt(txtId.getText()));
@@ -229,7 +236,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         botaoSair.setEnabled(true);
     }
 
-    private void confirmaAlterar(){
+    private void confirmaAlterar(){ //metodo para confirmar a alteração
         Cliente c = new Cliente();
         ClienteDAO dao = new ClienteDAO();
         c.setNome(txtNome.getText());
@@ -247,7 +254,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         botaoSair.setEnabled(true);
     }
 
-    private void insereSeparador(){
+    private void insereSeparador(){ //metodo para inserir a JLabel e o separador
         linha();
         gbc.insets = new Insets(10, 5, 0, 0);
         JLabel cc = new JLabel("Clientes cadastrados");
@@ -268,11 +275,11 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         jpTable.add(scroll, gbc);
     }
 
-    private void readTable() {
+    private void readTable() { //metodo para fazer a leitura no banco de dados e retornar na tabela
         EditableTableModel modelo = (EditableTableModel) tabela.getModel();
-        modelo.setAllRows(dados);
+        modelo.setAllRows(dados); //limpando a tabela
         ClienteDAO cdao = new ClienteDAO();
-        for (Cliente c: cdao.read()){
+        for (Cliente c: cdao.read()){ //inserindo os dados na tabela
             modelo.addRow(new String[]{Integer.toString(c.getId()),c.getNome(),c.getEmail()});
         }
     }
@@ -284,12 +291,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
     private void coluna() { /*Metodo para ordenar os itens do Frame (passar para a proxima coluna | \t)*/
         gbc.gridx = gbc.gridx + 1;
     }
-    private void insereBotao(){
-        botaoInserir.setEnabled(true);
-        botaoRemover.setEnabled(true);
-        botaoAlterar.setEnabled(true);
-    }
-    private void limpaBotao(){
+    private void limpaBotao(){ //metodo para desabilitar todos os botoes
         botaoInserir.setEnabled(false);
         botaoRemover.setEnabled(false);
         botaoAlterar.setEnabled(false);
@@ -297,21 +299,21 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         botaoConfirmar.setEnabled(false);
         botaoSair.setEnabled(false);
     }
-    private void bloqueiaTxt(){
+    private void bloqueiaTxt(){ //metodo para bloquear edição no textField
         txtCelular.setEnabled(false);
         txtComercial.setEnabled(false);
         txtEmail.setEnabled(false);
         txtNome.setEnabled(false);
         txtResidencial.setEnabled(false);
     }
-    private void desbloqueiaTxt(){
+    private void desbloqueiaTxt(){ //metodo para permitir edição no textField
         txtCelular.setEnabled(true);
         txtComercial.setEnabled(true);
         txtEmail.setEnabled(true);
         txtNome.setEnabled(true);
         txtResidencial.setEnabled(true);
     }
-    private void limpaTxt(){
+    private void limpaTxt(){ //metodo para limpar os campos textField
         txtCelular.setText("");
         txtComercial.setText("");
         txtEmail.setText("");

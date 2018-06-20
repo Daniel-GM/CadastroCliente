@@ -20,10 +20,7 @@ public class ClienteDAO {
             stmt.setString(3, c.getTelefoneComercial());
             stmt.setString(4, c.getTelefoneCelular());
             stmt.setString(5, c.getEmail());
-
             stmt.executeUpdate();
-
-            System.out.println(stmt);
             JOptionPane.showMessageDialog(null,"Cadastrado com sucesso!");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,"Falha no cadastro! "+e);
@@ -41,9 +38,9 @@ public class ClienteDAO {
             save.next();
             return save.getInt("id");
         }catch (SQLException e){
-            System.out.println("SQLException: "+e);
+            System.out.println("Falha ao conectar no banco de dados: "+e);
         }catch (Exception ex){
-            System.out.println("Exception: "+ex);
+            System.out.println("Exception idMax: "+ex);
             return 0;
         }finally {
             Conexao.closeConnection(conexao);
@@ -56,7 +53,6 @@ public class ClienteDAO {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         List<Cliente> clientes = new ArrayList<>();
-
         try {
             stmt = conexao.prepareStatement("SELECT id, nome, email FROM cliente");
             rs = stmt.executeQuery();
@@ -68,7 +64,7 @@ public class ClienteDAO {
                 clientes.add(cliente);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Dados da tabela com problema\n "+e);
+            JOptionPane.showMessageDialog(null,"Falha ao conectar no banco de dados "+e);
         }finally {
             Conexao.closeConnection(conexao,stmt,rs);
         }
@@ -83,16 +79,14 @@ public class ClienteDAO {
             stmt.setInt(1, c.getId());
             ResultSet rs = stmt.executeQuery();
             rs.next();
-
             c.setId(rs.getInt(1));
             c.setNome(rs.getString(2));
             c.setTelefoneResidencial(rs.getString(3));
             c.setTelefoneComercial(rs.getString(4));
             c.setTelefoneCelular(rs.getString(5));
             c.setEmail(rs.getString(6));
-
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null,"Falha ao coletar os dados"+e);
+            JOptionPane.showMessageDialog(null,"Falha ao conectar no banco de dados "+e);
         }finally {
             Conexao.closeConnection(conexao, stmt);
         }
@@ -112,10 +106,7 @@ public class ClienteDAO {
             stmt.setString(4, c.getTelefoneCelular());
             stmt.setString(5, c.getEmail());
             stmt.setInt(6, c.getId());
-
             stmt.executeUpdate();
-
-            System.out.println(stmt);
             JOptionPane.showMessageDialog(null,"Atualizado com sucesso");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,"Falha ao atualizar "+e);
@@ -130,10 +121,7 @@ public class ClienteDAO {
         try {
             stmt = conexao.prepareStatement("DELETE FROM cliente WHERE id=?");
             stmt.setInt(1, c.getId());
-
             stmt.executeUpdate();
-
-            System.out.println(stmt);
             JOptionPane.showMessageDialog(null,"Excluido com sucesso");
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null,"Erro ao excluir "+e);
