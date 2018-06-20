@@ -8,8 +8,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class CadastroCliente extends JFrame implements ActionListener {
+public class CadastroCliente extends JFrame implements ActionListener, MouseListener {
     /*POSICAO*/
     GridBagConstraints gbc = null;
     /*NOME*/
@@ -48,6 +50,8 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private ScrollTable tabela = ScrollTable.ofMutableCells(dados,titulos);
     /*PEGAR O ULTIMO ID*/
     private ClienteDAO cId  = new ClienteDAO();
+    /*AUXILIAR*/
+    private int botaoClicado;
 
     public CadastroCliente() throws HeadlessException{
         setTitle("Cadastro de cliente");
@@ -56,11 +60,11 @@ public class CadastroCliente extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setVisible(true);
 
-        botaoInserir.setEnabled(false);
+        botaoConfirmar.setEnabled(false);
         botaoRemover.setEnabled(false);
         botaoAlterar.setEnabled(false);
+        botaoCancelar.setEnabled(false);
         txtId.setEnabled(false);
-        txtId.setText(Integer.toString(cId.idMax()+1));
 
         setLayout(new FlowLayout(FlowLayout.LEFT));
         jpIdentificacao.setLayout(new GridBagLayout());
@@ -75,6 +79,7 @@ public class CadastroCliente extends JFrame implements ActionListener {
         gbc.anchor = GridBagConstraints.WEST;
 
         itensTela();
+        bloqueiaTxt();
     }
 
     private void itensTela() {
@@ -132,57 +137,114 @@ public class CadastroCliente extends JFrame implements ActionListener {
         linha();
         gbc.insets = new Insets(10, 5, 15, 0);
         botaoInserir.addActionListener(e->{
-            System.out.println("Inserir");
-            Cliente c = new Cliente();
-            ClienteDAO dao = new ClienteDAO();
-            c.setNome(txtNome.getText());
-            c.setTelefoneResidencial(txtResidencial.getText());
-            c.setTelefoneComercial(txtComercial.getText());
-            c.setTelefoneCelular(txtCelular.getText());
-            c.setEmail(txtEmail.getText());
-            dao.create(c);
+            limpaTxt();
+            botaoClicado = 1;
+            txtId.setText(Integer.toString(cId.idMax()+1));
+            limpaBotao();
+            desbloqueiaTxt();
+            botaoConfirmar.setEnabled(true);
+            botaoCancelar.setEnabled(true);
         });
         jpBotao.add(botaoInserir, gbc);
         /*botao de REMOVER*/
         coluna();
         botaoRemover.addActionListener(e->{
-            System.out.println("Remover");
+            botaoClicado=2;
             limpaBotao();
-            limpaTxt();
-            txtId.setText(Integer.toString(cId.idMax()+1));
+            botaoConfirmar.setEnabled(true);
+            botaoCancelar.setEnabled(true);
         });
         jpBotao.add(botaoRemover, gbc);
         /*botao de ALTERAR*/
         coluna();
         botaoAlterar.addActionListener(e->{
-            System.out.println("Alterar");
+            botaoClicado=3;
             limpaBotao();
+            desbloqueiaTxt();
+            botaoConfirmar.setEnabled(true);
+            botaoCancelar.setEnabled(true);
         });
         jpBotao.add(botaoAlterar, gbc);
         /*botao de CONFIRMAR*/
         coluna();
         botaoConfirmar.addActionListener(e->{
-            System.out.println("Confirmar");
-            insereBotao();
+            if(botaoClicado == 1) {
+                confirmaInserir();
+            }else if(botaoClicado == 2){
+                confirmaExcluir();
+            }else if (botaoClicado == 3){
+                confirmaAlterar();
+            }else{
+                JOptionPane.showMessageDialog(null,"Ocorreu um erro na confirmação da ação! Por favor entre em contato com o responsável");
+            }
+
         });
         jpBotao.add(botaoConfirmar, gbc);
         /*botao de CANCELAR*/
         coluna();
         botaoCancelar.addActionListener(e->{
-            System.out.println("Cancelar");
             limpaBotao();
             limpaTxt();
-            txtId.setText(Integer.toString(cId.idMax()+1));
+            bloqueiaTxt();
+            botaoInserir.setEnabled(true);
+            botaoSair.setEnabled(true);
         });
         jpBotao.add(botaoCancelar, gbc);
         /*botao de SAIR*/
         coluna();
         botaoSair.addActionListener(e->{
-            System.out.println("Sair");
             System.exit(0);
         });
         gbc.insets = new Insets(-5, 70, 0, 0);
         jpBotao.add(botaoSair, gbc);
+    }
+
+    private void confirmaInserir() {
+        Cliente c = new Cliente();
+        ClienteDAO dao = new ClienteDAO();
+        c.setNome(txtNome.getText());
+        c.setTelefoneResidencial(txtResidencial.getText());
+        c.setTelefoneComercial(txtComercial.getText());
+        c.setTelefoneCelular(txtCelular.getText());
+        c.setEmail(txtEmail.getText());
+        dao.create(c);
+        readTable();
+        limpaTxt();
+        limpaBotao();
+        bloqueiaTxt();
+        botaoInserir.setEnabled(true);
+        botaoSair.setEnabled(true);
+    }
+
+    private void confirmaExcluir(){
+        Cliente c = new Cliente();
+        ClienteDAO dao = new ClienteDAO();
+        c.setId(Integer.parseInt(txtId.getText()));
+        dao.delete(c);
+        readTable();
+        limpaTxt();
+        limpaBotao();
+        bloqueiaTxt();
+        botaoInserir.setEnabled(true);
+        botaoSair.setEnabled(true);
+    }
+
+    private void confirmaAlterar(){
+        Cliente c = new Cliente();
+        ClienteDAO dao = new ClienteDAO();
+        c.setNome(txtNome.getText());
+        c.setTelefoneResidencial(txtResidencial.getText());
+        c.setTelefoneComercial(txtComercial.getText());
+        c.setTelefoneCelular(txtCelular.getText());
+        c.setEmail(txtEmail.getText());
+        c.setId(Integer.parseInt(txtId.getText()));
+        dao.update(c);
+        readTable();
+        limpaTxt();
+        limpaBotao();
+        bloqueiaTxt();
+        botaoInserir.setEnabled(true);
+        botaoSair.setEnabled(true);
     }
 
     private void insereSeparador(){
@@ -199,13 +261,16 @@ public class CadastroCliente extends JFrame implements ActionListener {
     private void insereTabela() { /*Adicionando a Tabela no Frame*/
         linha();
         gbc.insets = new Insets(0, 5, 0,0);
-        tabela.setPreferredSize(new Dimension(553,80));
+        tabela.addMouseListener(this);
+        JScrollPane scroll = tabela.getScrollableTable();
+        scroll.setPreferredSize(new Dimension(553,80));
         readTable();
-        jpTable.add(tabela.getScrollableTable(), gbc);
+        jpTable.add(scroll, gbc);
     }
 
     private void readTable() {
         EditableTableModel modelo = (EditableTableModel) tabela.getModel();
+        modelo.setAllRows(dados);
         ClienteDAO cdao = new ClienteDAO();
         for (Cliente c: cdao.read()){
             modelo.addRow(new String[]{Integer.toString(c.getId()),c.getNome(),c.getEmail()});
@@ -228,6 +293,23 @@ public class CadastroCliente extends JFrame implements ActionListener {
         botaoInserir.setEnabled(false);
         botaoRemover.setEnabled(false);
         botaoAlterar.setEnabled(false);
+        botaoCancelar.setEnabled(false);
+        botaoConfirmar.setEnabled(false);
+        botaoSair.setEnabled(false);
+    }
+    private void bloqueiaTxt(){
+        txtCelular.setEnabled(false);
+        txtComercial.setEnabled(false);
+        txtEmail.setEnabled(false);
+        txtNome.setEnabled(false);
+        txtResidencial.setEnabled(false);
+    }
+    private void desbloqueiaTxt(){
+        txtCelular.setEnabled(true);
+        txtComercial.setEnabled(true);
+        txtEmail.setEnabled(true);
+        txtNome.setEnabled(true);
+        txtResidencial.setEnabled(true);
     }
     private void limpaTxt(){
         txtCelular.setText("");
@@ -237,6 +319,47 @@ public class CadastroCliente extends JFrame implements ActionListener {
         txtNome.setText("");
         txtResidencial.setText("");
     }
+
     @Override
     public void actionPerformed(ActionEvent actionEvent) {    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() % 2 == 0) {
+            Cliente c = new Cliente();
+            ClienteDAO dao = new ClienteDAO();
+            c.setId(Integer.parseInt((String) tabela.getValueAt(tabela.getSelectedRow(), 0)));
+            dao.buscaDados(c);
+            txtId.setText(Integer.toString(c.getId()));
+            txtNome.setText(c.getNome());
+            txtResidencial.setText(c.getTelefoneResidencial());
+            txtComercial.setText(c.getTelefoneComercial());
+            txtCelular.setText(c.getTelefoneCelular());
+            txtEmail.setText(c.getEmail());
+            botaoCancelar.setEnabled(false);
+            botaoConfirmar.setEnabled(false);
+            botaoAlterar.setEnabled(true);
+            botaoRemover.setEnabled(true);
+            botaoCancelar.setEnabled(true);
+        }
+    }
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
+    }
 }
