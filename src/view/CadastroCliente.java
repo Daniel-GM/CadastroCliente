@@ -146,7 +146,7 @@ public class CadastroCliente extends JFrame implements ActionListener, MouseList
         botaoInserir.addActionListener(e->{ //lambda para o ActionListener do botão
             limpaTxt();
             botaoClicado = 1;
-            txtId.setText(Integer.toString(cId.idMax()+1));
+            txtId.setText(Integer.toString(cId.idMax()));
             limpaBotao();
             desbloqueiaTxt();
             botaoConfirmar.setEnabled(true);

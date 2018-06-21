@@ -34,9 +34,9 @@ public class ClienteDAO {
         Statement stmt;
         try {
             stmt = conexao.createStatement();
-            ResultSet save = stmt.executeQuery("SELECT MAX(id) AS 'id' FROM cliente");
+            ResultSet save = stmt.executeQuery("SHOW TABLE STATUS WHERE `Name` = 'cliente'");
             save.next();
-            return save.getInt("id");
+            return save.getInt("Auto_increment");
         }catch (SQLException e){
             System.out.println("Falha ao conectar no banco de dados: "+e);
         }catch (Exception ex){
